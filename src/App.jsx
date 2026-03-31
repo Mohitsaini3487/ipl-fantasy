@@ -47,16 +47,35 @@ function App() {
         setLastUpdated(now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
         
         // --- Rank Movement Logic ---
-        const previousLeaderboard = JSON.parse(localStorage.getItem('previousLeaderboard')) || [];
+        const INITIAL_RANKS = [
+          "Ankit's Team",
+          "Piyush dhiman's Team",
+          "Aizen",
+          "Jenna Morrh Warriors",
+          "shabad's Team",
+          "GURI XI",
+          "Deepanshuu's Team",
+          "Maat maro shota bacha hu",
+          "Sumit's Team"
+        ].map((id, index) => ({ id, rank: index + 1 }));
+
+        const previousData = localStorage.getItem('previousLeaderboard');
+        const previousLeaderboard = (previousData && JSON.parse(previousData).length > 0) 
+          ? JSON.parse(previousData) 
+          : INITIAL_RANKS;
+        
         const teamsWithTrend = sortedTeams.map((team, index) => {
           const currentRank = index + 1;
           const prevEntry = previousLeaderboard.find(p => p.id === team.id);
           let trend = 'same';
+          let rankDiff = 0;
+          
           if (prevEntry) {
+            rankDiff = prevEntry.rank - currentRank;
             if (currentRank < prevEntry.rank) trend = 'up';
             else if (currentRank > prevEntry.rank) trend = 'down';
           }
-          return { ...team, trend };
+          return { ...team, trend, rankDiff };
         });
         
         setTeams(teamsWithTrend);

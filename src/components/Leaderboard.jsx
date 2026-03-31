@@ -77,14 +77,22 @@ const Leaderboard = ({ teams, hideInternalHeader }) => {
                         <motion.div
                           initial={{ opacity: 0, scale: 0.5 }}
                           animate={{ opacity: 1, scale: 1 }}
-                          className="flex items-center justify-center"
+                          className="flex items-center justify-center -mt-1"
                         >
                           {team.trend === 'up' ? (
-                            <TrendingUp size={12} className="text-emerald-500" />
+                            <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
+                              <TrendingUp size={10} className="text-emerald-500" strokeWidth={3} />
+                              <span className="text-[9px] font-black text-emerald-600 dark:text-emerald-400">{Math.abs(team.rankDiff || 0)}</span>
+                            </div>
                           ) : team.trend === 'down' ? (
-                            <TrendingDown size={12} className="text-rose-500" />
+                            <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-rose-500/10 border border-rose-500/20 shadow-[0_0_10px_rgba(244,63,94,0.1)]">
+                              <TrendingDown size={10} className="text-rose-500" strokeWidth={3} />
+                              <span className="text-[9px] font-black text-rose-600 dark:text-rose-400">{Math.abs(team.rankDiff || 0)}</span>
+                            </div>
                           ) : (
-                            <Minus size={12} className="text-slate-300 dark:text-slate-700" />
+                            <div className="px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-white/5 border border-black/5 dark:border-white/5">
+                              <Minus size={10} className="text-slate-400 dark:text-slate-600" strokeWidth={3} />
+                            </div>
                           )}
                         </motion.div>
                       </div>
