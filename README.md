@@ -80,7 +80,8 @@ http://localhost:3000
 - Users create a fantasy team before matches
 - Points are awarded based on real match performance  
 - Strategic selection (captain, budget, players) determines ranking  
-- Continuous updates keep gameplay competitive  
+- Continuous updates keep gameplay competitive
+- Created a file MOM.json for Man of The Match Player of each match.
 
 
 ---
