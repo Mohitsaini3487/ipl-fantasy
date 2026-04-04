@@ -68,5 +68,61 @@
     "man_of_the_match": {
       "player": "Sameer Rizvi"
     }
+  },
+  {
+    "match_no": 6,
+    "match_id": "M6",
+    "date": "2026-04-02 ",
+    "venue": "Kolkata",
+    "teams": {
+      "team1": "KKR",
+      "team2": "SRH"
+    },
+    "winner": "SRH",
+    "man_of_the_match": {
+      "player": "Nitish Kumar Reddy"
+    }
+  },
+  {
+    "match_no": 7,
+    "match_id": "M7",
+    "date": "2026-04-03",
+    "venue": "Chennai",
+    "teams": {
+      "team1": "CSK",
+      "team2": "PBKS"
+    },
+    "winner": "PBKS",
+    "man_of_the_match": {
+      "player": "Priyansh Arya"
+    }
+  },
+  {
+    "match_no": 8,
+    "match_id": "M8",
+    "date": "2026-04-04",
+    "venue": "Delhi",
+    "teams": {
+      "team1": "DC",
+      "team2": "MI"
+    },
+    "winner": "DC",
+    "man_of_the_match": {
+      "player": "Sameer Rizvi"
+    }
+  },
+  {
+    "match_no": 9,
+    "match_id": "M4",
+    "date": "2026-04-04",
+    "venue": "Ahemdabad",
+    "teams": {
+      "team1": "GT",
+      "team2": "RR"
+    },
+    "winner": "",
+    "man_of_the_match": {
+      "player": ""
+    }
   }
 ]
