@@ -45,27 +45,27 @@ function App() {
         const now = new Date();
         setLastUpdated(now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
         
-        // --- BASELINE DATA (Match 4 Screenshot Standings) ---
-        const BASELINE_MATCH4 = {
-          "Ankit's Team": 671,
-          "Piyush dhiman's Team": 583,
-          "shabad's Team": 479,
-          "Jenna Morrh Warriors": 439,
-          "Aizen": 425,
-          "Deepanshuu's Team": 356,
-          "Sumit's Team": 350.5,
-          "Maat maro shota bacha hu": 345.5,
-          "GURI XI": 288
+        // --- BASELINE DATA (Match 7 Screenshot Standings) ---
+        const BASELINE_MATCH7 = {
+          "Jenna Morrh Warriors": 1016,
+          "Maat maro shota bacha hu": 1012.5,
+          "shabad's Team": 920,
+          "Ankit's Team": 743,
+          "Sumit's Team": 737.5,
+          "Piyush dhiman's Team": 736,
+          "Deepanshuu's Team": 643.5,
+          "Aizen": 564,
+          "GURI XI": 396
         };
 
-        const INITIAL_RANKS = Object.keys(BASELINE_MATCH4)
-          .sort((a, b) => BASELINE_MATCH4[b] - BASELINE_MATCH4[a])
+        const INITIAL_RANKS = Object.keys(BASELINE_MATCH7)
+          .sort((a, b) => BASELINE_MATCH7[b] - BASELINE_MATCH7[a])
           .map((id, index) => ({ id, rank: index + 1 }));
 
-        // Current totals come directly from the public/data.xlsx (cumulative Match 5)
+        // Current totals come directly from the public/data.xlsx (cumulative Match 8)
         const finalStandings = parsedTeams.map(team => {
           const totalPoints = team.totalPoints;
-          const previousPoints = BASELINE_MATCH4[team.id] || 0;
+          const previousPoints = BASELINE_MATCH7[team.id] || 0;
           return {
             ...team,
             matchPoints: totalPoints - previousPoints,
@@ -75,7 +75,7 @@ function App() {
 
         const sortedTeams = [...finalStandings].sort((a, b) => b.totalPoints - a.totalPoints);
 
-        // Use INITIAL_RANKS (Match 4) as the fixed baseline for latest match movement
+        // Use INITIAL_RANKS (Match 5) as the fixed baseline for latest match movement
         const teamsWithTrend = sortedTeams.map((team, index) => {
           const currentRank = index + 1;
           const prevEntry = INITIAL_RANKS.find(p => p.id === team.id);
