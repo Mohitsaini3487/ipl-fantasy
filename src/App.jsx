@@ -6,7 +6,7 @@ import Teams from './components/Teams';
 import UpcomingMatch from './components/UpcomingMatch';
 import Home from './components/Home';
 import Schedule from './components/Schedule';
-import { Home as HomeIcon, LayoutDashboard, Users, Zap, Calendar, Target, Sun, Moon, Share2, CheckCircle2 } from 'lucide-react';
+import { Home as HomeIcon, LayoutDashboard, Users, Zap, Calendar, Target, Sun, Moon, Share2, CheckCircle2, LogOut } from 'lucide-react';
 import { parseExcelData } from './utils/excelParser';
 import ImpactAnalysis from './components/ImpactAnalysis';
 import { matches } from './data/matches';
@@ -197,45 +197,48 @@ function App() {
             <span className="text-lg font-black tracking-tight text-slate-900 dark:text-white">IPL Fantasy</span>
           </div>
           
-          <nav className="hidden md:flex gap-1 md:gap-4 overflow-x-auto items-center">
-            {tabs.slice(1).map((tab) => (
+          <div className="flex items-center gap-1 md:gap-4">
+            <nav className="hidden md:flex gap-1 md:gap-4 overflow-x-auto items-center">
+              {tabs.slice(1).map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => scrollTo(tab.id)}
+                  className="text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:scale-105 transition-all duration-300 tracking-wide px-3 py-2 whitespace-nowrap"
+                >
+                  {tab.name}
+                </button>
+              ))}
+              
               <button
-                key={tab.id}
-                onClick={() => scrollTo(tab.id)}
-                className="text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:scale-105 transition-all duration-300 tracking-wide px-3 py-2 whitespace-nowrap"
+                onClick={handleShare}
+                className="ml-2 flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:scale-105 transition-all duration-300"
+                aria-label="Share League"
               >
-                {tab.name}
+                <Share2 size={14} />
+                <span className="hidden sm:inline">Share</span>
               </button>
-            ))}
-            
-            <button
-              onClick={handleShare}
-              className="ml-2 flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:scale-105 transition-all duration-300"
-              aria-label="Share League"
-            >
-              <Share2 size={14} />
-              <span className="hidden sm:inline">Share</span>
-            </button>
+            </nav>
 
-            <button
-              onClick={toggleTheme}
-              className="ml-1 px-3 py-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:scale-105 transition-all duration-300"
-              aria-label="Toggle Theme"
-            >
-              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
+            <div className="flex items-center gap-1 md:gap-2">
+              <button
+                onClick={toggleTheme}
+                className="px-3 py-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:scale-105 transition-all duration-300"
+                aria-label="Toggle Theme"
+              >
+                {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+              </button>
 
-            {session?.role === 'player' && (
-              <button onClick={handleLogout} className="ml-2 md:ml-4 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors px-3 py-1.5 border border-black/10 dark:border-white/10 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">
-                Logout
-              </button>
-            )}
-            {session?.role === 'observer' && (
-              <button onClick={handleLogout} className="ml-2 md:ml-4 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors px-3 py-1.5 border border-black/10 dark:border-white/10 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">
-                Exit
-              </button>
-            )}
-          </nav>
+              {session && (
+                <button 
+                  onClick={handleLogout} 
+                  className="ml-1 md:ml-2 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all px-3 py-1.5 border border-black/10 dark:border-white/10 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 active:scale-95"
+                >
+                  <LogOut size={16} />
+                  <span className="hidden md:inline">{session.role === 'observer' ? 'Exit' : 'Logout'}</span>
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </header>
 
