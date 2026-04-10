@@ -43,16 +43,16 @@ const teams = [
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="glass-premium p-4 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-xl">
-        <p className="text-sm font-black text-slate-400 mb-2 uppercase tracking-widest">Match {label}</p>
+      <div className="glass-premium p-4 rounded-2xl border border-black/5 dark:border-white/10 shadow-2xl backdrop-blur-xl">
+        <p className="text-sm font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Match {label}</p>
         <div className="space-y-1.5">
           {payload.sort((a, b) => b.value - a.value).map((entry, index) => (
             <div key={index} className="flex items-center justify-between gap-6">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
-                <span className="text-xs font-bold text-slate-200">{entry.name}</span>
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-200">{entry.name}</span>
               </div>
-              <span className="text-xs font-black text-white">{entry.value.toLocaleString()}</span>
+              <span className="text-xs font-black text-slate-900 dark:text-white">{entry.value.toLocaleString()}</span>
             </div>
           ))}
         </div>
@@ -64,6 +64,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 const ProgressionGraph = () => {
   const [activeTeam, setActiveTeam] = React.useState(null);
+  const isDark = document.documentElement.classList.contains('dark');
 
   return (
     <div className="w-full max-w-6xl mx-auto py-12 px-4">
@@ -78,18 +79,18 @@ const ProgressionGraph = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
           <div>
             <h2 className="text-sm font-black tracking-[0.2em] text-slate-500 uppercase mb-2">Analytics</h2>
-            <h3 className="text-3xl md:text-4xl font-black text-white tracking-tighter">Fantasy League Progression</h3>
+            <h3 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">Fantasy League Progression</h3>
           </div>
           <motion.div 
             animate={{ 
               boxShadow: activeTeam === 'shabad' ? '0 0 20px rgba(139, 92, 246, 0.3)' : 'none',
               borderColor: activeTeam === 'shabad' ? 'rgba(139, 92, 246, 0.5)' : 'rgba(255, 255, 255, 0.1)'
             }}
-            className="flex items-center gap-4 bg-white/5 rounded-2xl p-4 border border-white/10"
+            className="flex items-center gap-4 bg-black/5 dark:bg-white/5 rounded-2xl p-4 border border-black/10 dark:border-white/10"
           >
              <div className="flex flex-col">
                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Leader</span>
-                <span className="text-sm font-black text-white">shabad's Team</span>
+                <span className="text-sm font-black text-slate-900 dark:text-white">shabad's Team</span>
              </div>
           </motion.div>
         </div>
@@ -123,12 +124,12 @@ const ProgressionGraph = () => {
               <CartesianGrid 
                 strokeDasharray="3 3" 
                 vertical={false} 
-                stroke="rgba(255,255,255,0.05)" 
+                stroke={isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)"}
               />
               
               <XAxis 
                 dataKey="match" 
-                stroke="rgba(255,255,255,0.3)" 
+                stroke={isDark ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.3)"}
                 fontSize={10} 
                 fontWeight={700}
                 tickLine={false}
@@ -147,7 +148,7 @@ const ProgressionGraph = () => {
               />
               
               <YAxis 
-                stroke="rgba(255,255,255,0.3)" 
+                stroke={isDark ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.3)"}
                 fontSize={10} 
                 fontWeight={700}
                 tickLine={false}
@@ -158,7 +159,7 @@ const ProgressionGraph = () => {
 
               <Tooltip 
                 content={<CustomTooltip />} 
-                cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 2 }}
+                cursor={{ stroke: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)', strokeWidth: 2 }}
                 isAnimationActive={false}
               />
               
@@ -183,7 +184,7 @@ const ProgressionGraph = () => {
                           onClick={() => setActiveTeam(activeTeam === team?.key ? null : team?.key)}
                         >
                           <div className={`w-2.5 h-2.5 rounded-full transition-transform ${isHovered ? 'scale-125' : 'scale-100'}`} style={{ backgroundColor: entry.color, boxShadow: isHovered ? `0 0 10px ${entry.color}` : 'none' }} />
-                          <span className={`text-[10px] font-black uppercase tracking-widest ${isHovered ? 'text-white' : 'text-slate-400'}`}>{entry.value}</span>
+                          <span className={`text-[10px] font-black uppercase tracking-widest ${isHovered ? (isDark ? 'text-white' : 'text-slate-900') : 'text-slate-500 dark:text-slate-400'}`}>{entry.value}</span>
                         </div>
                       );
                     })}
@@ -221,11 +222,11 @@ const ProgressionGraph = () => {
               <ReferenceArea 
                 x1={11.5} 
                 x2={12.5} 
-                fill="rgba(255,255,255,0.03)" 
+                fill={isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.03)"} 
                 label={{ 
                   value: 'Washed Out', 
                   position: 'insideTop', 
-                  fill: 'rgba(255,255,255,0.2)', 
+                  fill: isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.4)", 
                   fontSize: 10, 
                   fontWeight: 900,
                   offset: 20
