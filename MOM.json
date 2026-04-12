@@ -232,9 +232,9 @@
       "team1": "PBKS",
       "team2": "SRH"
     },
-    "winner": "",
+    "winner": "PBKS",
     "man_of_the_match": {
-      "player": ""
+      "player": "Shreyas Iyer"
     }
   },
   {
@@ -245,6 +245,34 @@
     "teams": {
       "team1": "CSK",
       "team2": "DC"
+    },
+    "winner": "CSK",
+    "man_of_the_match": {
+      "player": "Sanju Samson"
+    }
+  },
+  {
+    "match_no": 19,
+    "match_id": "M19",
+    "date": "2026-04-12",
+    "venue": "Lucknow",
+    "teams": {
+      "team1": "LSG",
+      "team2": "GT"
+    },
+    "winner": "",
+    "man_of_the_match": {
+      "player": ""
+    }
+  },
+  {
+    "match_no": 20,
+    "match_id": "M20",
+    "date": "2026-04-12",
+    "venue": "Mumbai",
+    "teams": {
+      "team1": "MI",
+      "team2": "RCB"
     },
     "winner": "",
     "man_of_the_match": {
