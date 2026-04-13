@@ -103,7 +103,7 @@ export const parseExcelData = (arrayBuffer) => {
       
       const iplTeamRaw = row[base.iplCol] || "";
       const iplTeam = normalizeTeamName(iplTeamRaw);
-      const basePoints = parseInt(row[base.pointsCol]) || 0;
+      const basePoints = parseFloat(row[base.pointsCol]) || 0;
       const finalPoints = basePoints * multiplier;
       
       players.push({

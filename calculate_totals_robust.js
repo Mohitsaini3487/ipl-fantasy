@@ -49,8 +49,8 @@ Object.keys(headerRow).forEach(key => {
                 pointsKey = keys[i];
                 break;
             }
-            // Stop if we hit another team
-            if (i > startIndex && !keys[i].startsWith('_')) break;
+            // Stop if we hit another team (starts with a non-blank, non-underscore key that isn't the current team)
+            if (i > startIndex && keys[i] !== "" && !keys[i].startsWith('_')) break;
         }
         
         if (pointsKey) {
