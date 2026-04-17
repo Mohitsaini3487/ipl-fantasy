@@ -6,10 +6,12 @@ import Teams from './components/Teams';
 import UpcomingMatch from './components/UpcomingMatch';
 import Home from './components/Home';
 import Schedule from './components/Schedule';
-import { Home as HomeIcon, LayoutDashboard, Users, Zap, Calendar, Target, Sun, Moon, Share2, CheckCircle2 } from 'lucide-react';
+import { Home as HomeIcon, LayoutDashboard, Users, Zap, Calendar, Target, Sun, Moon, Share2, CheckCircle2, LogOut } from 'lucide-react';
 import { parseExcelData } from './utils/excelParser';
 import ImpactAnalysis from './components/ImpactAnalysis';
 import { matches } from './data/matches';
+import ProgressionGraph from './components/ProgressionGraph';
+import MobileNav from './components/MobileNav';
 
 function App() {
   const [teams, setTeams] = useState([]);
@@ -45,27 +47,27 @@ function App() {
         const now = new Date();
         setLastUpdated(now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
         
-        // --- BASELINE DATA (Match 14 Screenshot Standings) ---
-        const BASELINE_MATCH14 = {
-          "shabad's Team": 2134,
-          "Piyush dhiman's Team": 1813.5,
-          "Sumit's Team": 1798.5,
-          "Deepanshuu's Team": 1392.5,
-          "Ankit's Team": 1360.5,
-          "Jenna Morrh Warriors": 1357.5,
-          "Maat maro shota bacha hu": 1221.5,
-          "GURI XI": 1149.5,
-          "Aizen": 892.5
+        // --- BASELINE DATA (Match 23 Standings) ---
+        const BASELINE_MATCH23 = {
+          "shabad's Team": 3232,
+          "Sumit's Team": 3126.5,
+          "Deepanshuu's Team": 3074.5,
+          "Piyush dhiman's Team": 2380.5,
+          "Ankit's Team": 2594.5,
+          "Maat maro shota bacha hu": 2237.5,
+          "Jenna Morrh Warriors": 2231.5,
+          "GURI XI": 2209.5,
+          "Aizen": 1656.5
         };
 
-        const INITIAL_RANKS = Object.keys(BASELINE_MATCH14)
-          .sort((a, b) => BASELINE_MATCH14[b] - BASELINE_MATCH14[a])
+        const INITIAL_RANKS = Object.keys(BASELINE_MATCH23)
+          .sort((a, b) => BASELINE_MATCH23[b] - BASELINE_MATCH23[a])
           .map((id, index) => ({ id, rank: index + 1 }));
 
-        // Current totals come directly from the public/data.xlsx (cumulative Match 15)
+        // Current totals come directly from the public/data.xlsx (cumulative Match 24)
         const finalStandings = parsedTeams.map(team => {
           const totalPoints = team.totalPoints;
-          const previousPoints = BASELINE_MATCH14[team.id] || 0;
+          const previousPoints = BASELINE_MATCH23[team.id] || 0;
           return {
             ...team,
             matchPoints: totalPoints - previousPoints,
@@ -75,7 +77,7 @@ function App() {
 
         const sortedTeams = [...finalStandings].sort((a, b) => b.totalPoints - a.totalPoints);
 
-        // Use INITIAL_RANKS (Match 12) as the fixed baseline for latest match movement
+        // Use INITIAL_RANKS (Match 23) as the fixed baseline for latest match movement
         const teamsWithTrend = sortedTeams.map((team, index) => {
           const currentRank = index + 1;
           const prevEntry = INITIAL_RANKS.find(p => p.id === team.id);
@@ -195,45 +197,48 @@ function App() {
             <span className="text-lg font-black tracking-tight text-slate-900 dark:text-white">IPL Fantasy</span>
           </div>
           
-          <nav className="flex gap-1 md:gap-4 overflow-x-auto items-center">
-            {tabs.slice(1).map((tab) => (
+          <div className="flex items-center gap-1 md:gap-4">
+            <nav className="hidden md:flex gap-1 md:gap-4 overflow-x-auto items-center">
+              {tabs.slice(1).map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => scrollTo(tab.id)}
+                  className="text-[10px] font-black tracking-[0.2em] text-slate-500 hover:text-[#00d4ff] hover:drop-shadow-[0_0_8px_rgba(0,212,255,0.8)] transition-all duration-300 px-3 py-2 whitespace-nowrap uppercase"
+                >
+                  {tab.name}
+                </button>
+              ))}
+              
               <button
-                key={tab.id}
-                onClick={() => scrollTo(tab.id)}
-                className="text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:scale-105 transition-all duration-300 tracking-wide px-3 py-2 whitespace-nowrap"
+                onClick={handleShare}
+                className="ml-2 flex items-center gap-1.5 px-3 py-2 text-[10px] font-black tracking-[0.2em] uppercase text-slate-500 hover:text-[#00d4ff] hover:drop-shadow-[0_0_8px_rgba(0,212,255,0.8)] transition-all duration-300"
+                aria-label="Share League"
               >
-                {tab.name}
+                <Share2 size={14} />
+                <span className="hidden sm:inline">Share</span>
               </button>
-            ))}
-            
-            <button
-              onClick={handleShare}
-              className="ml-2 flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:scale-105 transition-all duration-300"
-              aria-label="Share League"
-            >
-              <Share2 size={14} />
-              <span className="hidden sm:inline">Share</span>
-            </button>
+            </nav>
 
-            <button
-              onClick={toggleTheme}
-              className="ml-1 px-3 py-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:scale-105 transition-all duration-300"
-              aria-label="Toggle Theme"
-            >
-              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
+            <div className="flex items-center gap-1 md:gap-2">
+              <button
+                onClick={toggleTheme}
+                className="px-3 py-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:scale-105 transition-all duration-300"
+                aria-label="Toggle Theme"
+              >
+                {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+              </button>
 
-            {session?.role === 'player' && (
-              <button onClick={handleLogout} className="ml-2 md:ml-4 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors px-3 py-1.5 border border-black/10 dark:border-white/10 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">
-                Logout
-              </button>
-            )}
-            {session?.role === 'observer' && (
-              <button onClick={handleLogout} className="ml-2 md:ml-4 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors px-3 py-1.5 border border-black/10 dark:border-white/10 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">
-                Exit
-              </button>
-            )}
-          </nav>
+              {session && (
+                <button 
+                  onClick={handleLogout} 
+                  className="ml-1 md:ml-2 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all px-3 py-1.5 border border-black/10 dark:border-white/10 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 active:scale-95"
+                >
+                  <LogOut size={16} />
+                  <span className="hidden md:inline">{session.role === 'observer' ? 'Exit' : 'Logout'}</span>
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </header>
 
@@ -247,7 +252,7 @@ function App() {
           <Home onNavigate={scrollTo} />
         </section>
 
-        <section id="leaderboard" className="pt-32 pb-20 border-t border-black/5 dark:border-white/5">
+        <section id="leaderboard" className="pt-20 md:pt-32 pb-10 md:pb-20 border-t border-black/5 dark:border-white/5">
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -255,13 +260,14 @@ function App() {
             transition={{ duration: 0.8 }}
             className="max-w-5xl mx-auto px-4 mb-4 text-center"
           >
-            <h2 className="text-[clamp(3rem,5vw,4.5rem)] font-black tracking-tighter leading-tight text-slate-900 dark:text-white">Track Every Point.</h2>
+            <h2 className="text-[clamp(3rem,5vw,4.5rem)] font-black tracking-tighter leading-tight text-slate-900 dark:text-white text-shiny">Track Every Point.</h2>
             <p className="text-lg md:text-xl text-slate-600 dark:text-slate-500 mt-2 tracking-tight">The live leaderboard updated in real-time. Last Refreshed: {lastUpdated}</p>
           </motion.div>
           <Leaderboard teams={teamsWithUser} hideInternalHeader={true} />
+          <ProgressionGraph />
         </section>
         
-        <section id="all-teams" className="pt-32 pb-20 border-t border-black/5 dark:border-white/5">
+        <section id="all-teams" className="pt-20 md:pt-32 pb-10 md:pb-20 border-t border-black/5 dark:border-white/5">
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -269,13 +275,13 @@ function App() {
             transition={{ duration: 0.8 }}
             className="max-w-6xl mx-auto px-4 mb-4 text-center"
           >
-            <h2 className="text-[clamp(3rem,5vw,4.5rem)] font-black tracking-tighter leading-tight text-slate-900 dark:text-white">Know Your Team.</h2>
+            <h2 className="text-[clamp(3rem,5vw,4.5rem)] font-black tracking-tighter leading-tight text-slate-900 dark:text-white text-shiny">Know Your Team.</h2>
             <p className="text-lg md:text-xl text-slate-600 dark:text-slate-500 mt-2 tracking-tight">Every squad, every player, every stat beautifully organized.</p>
           </motion.div>
           <Teams teams={teamsWithUser} hideInternalHeader={true} />
         </section>
 
-        <section id="upcoming" className="pt-32 pb-10 border-t border-black/5 dark:border-white/5">
+        <section id="upcoming" className="pt-20 md:pt-32 pb-6 md:pb-10 border-t border-black/5 dark:border-white/5">
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -283,7 +289,7 @@ function App() {
             transition={{ duration: 0.8 }}
             className="max-w-6xl mx-auto px-4 mb-4 text-center"
           >
-            <h2 className="text-[clamp(3rem,5vw,4.5rem)] font-black tracking-tighter leading-tight text-slate-900 dark:text-white">Plan Ahead.</h2>
+            <h2 className="text-[clamp(3rem,5vw,4.5rem)] font-black tracking-tighter leading-tight text-slate-900 dark:text-white text-shiny">Plan Ahead.</h2>
             <p className="text-lg md:text-xl text-slate-600 dark:text-slate-500 mt-2 tracking-tight">Deep impact analysis for the next upcoming fixture.</p>
           </motion.div>
           <UpcomingMatch teams={teamsWithUser} matchInfo={upcomingMatch} hideInternalHeader={true} />
@@ -293,7 +299,7 @@ function App() {
           <ImpactAnalysis teams={teamsWithUser} matchInfo={upcomingMatch} hideInternalHeader={true} />
         </section>
 
-        <section id="schedule" className="pt-32 pb-32 border-t border-black/5 dark:border-white/5">
+        <section id="schedule" className="pt-20 md:pt-32 pb-20 md:pb-32 border-t border-black/5 dark:border-white/5">
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -301,7 +307,7 @@ function App() {
             transition={{ duration: 0.8 }}
             className="max-w-6xl mx-auto px-4 mb-4 text-center"
           >
-            <h2 className="text-[clamp(3rem,5vw,4.5rem)] font-black tracking-tighter leading-tight text-slate-900 dark:text-white">The Long Game.</h2>
+            <h2 className="text-[clamp(3rem,5vw,4.5rem)] font-black tracking-tighter leading-tight text-slate-900 dark:text-white text-shiny">The Long Game.</h2>
             <p className="text-lg md:text-xl text-slate-600 dark:text-slate-500 mt-2 tracking-tight">Full tournament schedule and fixture tracking.</p>
           </motion.div>
           <Schedule teams={teamsWithUser} hideInternalHeader={true} />
@@ -328,6 +334,7 @@ function App() {
           </motion.div>
         )}
       </AnimatePresence>
+      <MobileNav onNavigate={scrollTo} />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import * as XLSX from 'xlsx';
+import * as fs from 'fs';
 
-export const iplTeamMap = {
+const iplTeamMap = {
   "Sunrisers Hyderabad": "SRH",
   "Mumbai Indians": "MI",
   "Chennai Super Kings": "CSK",
@@ -34,35 +35,27 @@ const teamRoles = {
   "Sumit's Team": { captain: "Rishabh Pant", viceCaptain: "Abhishek Sharma" }
 };
 
-export const parseExcelData = (arrayBuffer) => {
-  const data = new Uint8Array(arrayBuffer);
-  const workbook = XLSX.read(data, { type: 'array' });
+const parseExcelData = (fileBuffer) => {
+  const workbook = XLSX.read(fileBuffer, { type: 'buffer' });
   const sheetName = workbook.SheetNames[0];
   const worksheet = workbook.Sheets[sheetName];
   
-  // Use header: 1 to get raw rows for discovery
   const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
   if (rows.length < 2) return [];
 
   const headers = rows[0];
   const labels = rows[1];
   
-  // Discover Teams Dynamically
   const discoveredTeams = [];
   for (let i = 0; i < headers.length; i++) {
     const header = headers[i];
-    // A team header is non-empty and has "Player Name" in labels at the same index
     if (header && typeof header === 'string' && header.trim() !== "" && labels[i] === "Player Name") {
-      // Find the "IPL Team" and "Points" columns for this team block
       let iplIdx = -1;
       let pointsIdx = -1;
-      
-      // Look ahead for "IPL Team" and "Points" until the next team header
       for (let j = i; j < labels.length && (j === i || !headers[j]); j++) {
         if (labels[j] === "IPL Team") iplIdx = j;
         if (labels[j] === "Points") pointsIdx = j;
       }
-
       if (pointsIdx !== -1) {
         discoveredTeams.push({
           name: header.trim(),
@@ -75,59 +68,30 @@ export const parseExcelData = (arrayBuffer) => {
   }
 
   const teams = [];
-
   discoveredTeams.forEach(base => {
-    const players = [];
     let calculatedTotal = 0;
-    
     const roles = teamRoles[base.name] || {};
-    
-    // Rows start from index 2 (after header and labels)
     for (let i = 2; i < rows.length; i++) {
       const row = rows[i];
       const rawName = row[base.playerCol];
-      
       if (!rawName || rawName === "TOTAL") continue; 
-
       const cleanName = rawName.replace(/\s*\(\s*(C|VC)\s*\)\s*/i, "").trim();
-      
       const isCaptain = rawName.includes("(C)");
       const isVC = rawName.includes("(VC)");
-      
-      // Fallback to teamRoles if no marker is present in Excel
-      const roles = teamRoles[base.name] || {};
       const finalIsCaptain = isCaptain || (cleanName === roles.captain);
       const finalIsVC = isVC || (cleanName === roles.viceCaptain);
-      
       const multiplier = finalIsCaptain ? 2 : (finalIsVC ? 1.5 : 1);
-      
-      const iplTeamRaw = row[base.iplCol] || "";
-      const iplTeam = normalizeTeamName(iplTeamRaw);
       const basePoints = parseFloat(row[base.pointsCol]) || 0;
-      const finalPoints = basePoints * multiplier;
-      
-      players.push({
-        name: cleanName,
-        rawName: rawName,
-        iplTeam: iplTeam,
-        iplAbbr: iplTeamMap[iplTeam] || iplTeam,
-        basePoints,
-        multiplier,
-        finalPoints,
-        isCaptain: finalIsCaptain,
-        isVC: finalIsVC
-      });
-      calculatedTotal += finalPoints;
+      calculatedTotal += basePoints * multiplier;
     }
-    
     teams.push({
       id: base.name,
-      teamName: base.name,
-      players,
-      totalPoints: calculatedTotal,
-      isUser: false
+      totalPoints: calculatedTotal
     });
   });
-
   return teams;
 };
+
+const fileBuffer = fs.readFileSync('./public/data.xlsx');
+const parsed = parseExcelData(fileBuffer);
+console.log(JSON.stringify(parsed, null, 2));
